@@ -1,5 +1,7 @@
+// lib/widgets/credit_amount_view.dart
 import 'package:flutter/material.dart';
 import '../models/stack_item.dart';
+import 'circular_slider.dart'; // You'll need to create this
 
 class CreditAmountView extends StatefulWidget {
   final OpenState openState;
@@ -14,66 +16,56 @@ class _CreditAmountViewState extends State<CreditAmountView> {
   double _currentValue = 0;
 
   @override
-  void initState() {
-    super.initState();
-    _currentValue = widget.openState.body.card?.minRange?.toDouble() ?? 0;
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final card = widget.openState.body.card;
-    if (card == null) return Container();
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.openState.body.title ?? '',
-          style: Theme.of(context).textTheme.headlineSmall,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => Navigator.pop(context),
+            ),
+            IconButton(
+              icon: const Icon(Icons.help_outline),
+              onPressed: () {},
+            ),
+          ],
         ),
-        const SizedBox(height: 8),
-        Text(
-          widget.openState.body.subtitle ?? '',
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        const SizedBox(height: 24),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  card.header,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                Text(
-                  card.description,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  '₹${_currentValue.toStringAsFixed(0)}',
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-                Slider(
+        Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'nikunj, how much do you need?',
+                style: Theme.of(context).textTheme.headlineLarge,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'move the dial and set any amount you need up to ₹487,891',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              const SizedBox(height: 40),
+              Center(
+                child: CircularSlider(
                   value: _currentValue,
-                  min: card.minRange.toDouble(),
-                  max: card.maxRange.toDouble(),
+                  min: widget.openState.body.card?.minRange?.toDouble() ?? 0,
+                  max: widget.openState.body.card?.maxRange?.toDouble() ?? 100000,
                   onChanged: (value) {
-                    setState(() {
-                      _currentValue = value;
-                    });
+                    setState(() => _currentValue = value);
                   },
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 40),
+              Text(
+                'stash is instant, money will be credited within seconds',
+                style: Theme.of(context).textTheme.bodyMedium,
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
-        ),
-        const SizedBox(height: 16),
-        Text(
-          widget.openState.body.footer ?? '',
-          style: Theme.of(context).textTheme.bodySmall,
         ),
       ],
     );
